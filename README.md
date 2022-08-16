@@ -7,7 +7,7 @@ This demo also uses [AWS Cloud Development Kit (AWS CDK v2)](https://aws.amazon.
 - [Getting Started](#getting-started)
     - [Setup](#setup)
     - [Bootstrapping](#bootstrapping)
-    - [Deploy](#deploy) - TODO 
+    - [Deploy](#deploy) 
 - [State Machine](#state-machine)
   - [State Machine Definition](#state-machine-definition)
   - [Execution Input](#execution-input)
