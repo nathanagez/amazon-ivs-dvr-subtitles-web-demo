@@ -1,16 +1,23 @@
 import {Construct} from "constructs";
 import {aws_ivs as ivs} from 'aws-cdk-lib';
 
+interface Props {
+    bucketName: string;
+}
+
 export class IvsConstruct extends Construct {
     private channel: ivs.CfnChannel;
     private streamKey: ivs.CfnStreamKey;
     private recordingConfig: ivs.CfnRecordingConfiguration;
 
-    constructor(scope: Construct, id: string) {
+    constructor(scope: Construct, id: string, props: Props) {
         super(scope, id);
+        this.recordingConfig = this.createRecordingConfig(props.bucketName, 'RecordingConfiguration')
+        this.channel = this.createChannel('my-demo-channel', 'Channel')
+        this.streamKey = this.addStreamKey('StreamKey', this.channelArn);
     }
 
-    createChannel(name: string, id: string = "Channel") {
+    createChannel(name: string, id: string) {
         const props = {
             authorized: false,
             latencyMode: 'LOW',
@@ -18,19 +25,17 @@ export class IvsConstruct extends Construct {
             type: 'STANDARD',
             recordingConfigurationArn: this.recordingConfig.attrArn || ""
         }
-        this.channel = new ivs.CfnChannel(this, id, props);
+        return new ivs.CfnChannel(this, id, props);
     }
 
-    addStreamKey(id: string = "StreamKey") {
-        if (!this.channel)
-            throw new Error("You should create a channel first")
-        this.streamKey = new ivs.CfnStreamKey(this, id, {
-            channelArn: this.channelArn,
+    addStreamKey(id: string, channelArn: string) {
+        return new ivs.CfnStreamKey(this, id, {
+            channelArn: channelArn,
         });
     }
 
-    createRecordingConfig(bucketName: string, id: string = "RecordingConfiguration") {
-        this.recordingConfig = new ivs.CfnRecordingConfiguration(this, id, {
+    createRecordingConfig(bucketName: string, id: string) {
+        return new ivs.CfnRecordingConfiguration(this, id, {
             destinationConfiguration: {
                 s3: {
                     bucketName

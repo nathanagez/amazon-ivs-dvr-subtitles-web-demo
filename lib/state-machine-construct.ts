@@ -1,46 +1,39 @@
 import {Construct} from "constructs";
-import {StateMachine} from "aws-cdk-lib/aws-stepfunctions";
+import {IntegrationPattern, JsonPath, StateMachine, TaskInput} from "aws-cdk-lib/aws-stepfunctions";
 import {LambdaInvoke} from "aws-cdk-lib/aws-stepfunctions-tasks";
-import {IFunction} from "aws-cdk-lib/aws-lambda";
-import {NodejsFunction} from "aws-cdk-lib/aws-lambda-nodejs";
-import {RetentionDays} from "aws-cdk-lib/aws-logs";
+import {ILambdaFunctions} from "./interfaces";
+import {IGrantable} from "aws-cdk-lib/aws-iam";
+
+interface Props {
+    lambdaFunctions: ILambdaFunctions
+}
 
 export class StateMachineConstruct extends Construct {
-    private stateMachine: any;
-    private transcribeFn: NodejsFunction;
-    private mediaConvertFn: NodejsFunction;
+    public readonly stateMachine: StateMachine;
 
-    constructor(scope: Construct, id: string) {
+    constructor(scope: Construct, id: string, props: Props) {
         super(scope, id);
-        this.createFn();
-        this.createDefinition();
+        this.stateMachine = new StateMachine(this, 'Definition', {
+            definition: this.createDefinition(props)
+        })
     }
 
-    private createDefinition() {
+    private createDefinition(props: Props) {
         const startMediaConvertJob = new LambdaInvoke(this, 'Start MediaConvert Job and Wait', {
-            lambdaFunction: this.mediaConvertFn
+            lambdaFunction: props.lambdaFunctions.mediaConvert,
+            payload: TaskInput.fromObject({
+                'input.$': '$',
+                taskToken: JsonPath.taskToken,
+            }),
+            integrationPattern: IntegrationPattern.WAIT_FOR_TASK_TOKEN,
         })
         const startTranscribeJob = new LambdaInvoke(this, 'Start Transcribe Job and Wait', {
-            lambdaFunction: this.transcribeFn
+            lambdaFunction: props.lambdaFunctions.transcribe
         })
-        const definition = startMediaConvertJob.next(startTranscribeJob)
-        this.stateMachine = new StateMachine(this, 'Definition', {
-            definition
-        })
+        return startMediaConvertJob.next(startTranscribeJob)
     }
 
-    private createFn() {
-        const props = {
-            logRetention: RetentionDays.THREE_DAYS,
-        }
-
-        this.transcribeFn = new NodejsFunction(this, 'Transcribe', {
-            entry: 'lambda/transcribe/index.ts',
-            ...props
-        });
-        this.mediaConvertFn = new NodejsFunction(this, 'MediaConvert', {
-            entry: 'lambda/media-convert/index.ts',
-            ...props
-        });
+    grantTaskResponse(identity: IGrantable) {
+        this.stateMachine.grantTaskResponse(identity)
     }
 }
