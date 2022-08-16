@@ -6,6 +6,7 @@ This demo also uses [AWS Cloud Development Kit (AWS CDK v2)](https://aws.amazon.
 ## Table of contents
 - [Getting Started](#getting-started)
     - [Setup](#setup)
+    - [Bootstrapping](#bootstrapping)
     - [Deploy](#deploy) - TODO 
 - [State Machine](#state-machine)
   - [State Machine Definition](#state-machine-definition)
@@ -17,9 +18,31 @@ This demo also uses [AWS Cloud Development Kit (AWS CDK v2)](https://aws.amazon.
 ## Getting Started
 The following steps describe how to deploy the solution using the Amazon Cloud Development Kit (CDK). Read more about the CDK [here](https://docs.aws.amazon.com/cdk/v2/guide/home.html).
 ```sh
-$ git clone git@github.com:trackit/curation-tool-cdk.git
-$ cd curation-tool-cdk
+$ git clone git@github.com:nathanagez/amazon-ivs-dvr-subtitles-web-demo.git
+$ cd amazon-ivs-dvr-subtitles-web-demo
 $ npm install
+```
+
+Install the AWS CDK.
+
+```sh
+$ npm install -g aws-cdk 
+```
+
+### Bootstrapping
+
+Deploying AWS CDK apps into an AWS environment (a combination of an AWS account and region) may require that you
+provision resources the AWS CDK needs to perform the deployment. These resources include an Amazon S3 bucket for storing
+files and IAM roles that grant permissions needed to perform deployments. The process of provisioning these initial
+resources is called bootstrapping.
+
+```
+$ cdk bootstrap aws://<ACCOUNT-NUMBER-1/REGION-1
+```
+### Deploy
+
+```sh
+$ cdk deploy
 ```
 
 ### Setup
