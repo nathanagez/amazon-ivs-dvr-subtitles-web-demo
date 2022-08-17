@@ -33,7 +33,10 @@ export class LambdaConstruct extends Construct {
             timeout: Duration.seconds(15)
         });
         this.transcribeFn = this.createLambdaFn('transcribe', 'Transcribe', {
-            timeout: Duration.seconds(15)
+            timeout: Duration.seconds(15),
+            environment: {
+                SERVICE_TOKENS_TABLE: props.tableName
+            },
         });
         this.mediaConvertFn = this.createLambdaFn('media-convert', 'MediaConvert', {
             environment: {

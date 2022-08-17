@@ -53,6 +53,7 @@ export class EventsConstruct extends Construct {
             },
         })
         EventsConstruct.addFnTarget(this.mediaConvertRule, props.lambdaFunctions.eventWatcher)
+        EventsConstruct.addFnTarget(this.transcribeRule, props.lambdaFunctions.eventWatcher)
         EventsConstruct.addStateMachineTarget(this.ivsRule, props.stateMachine)
     }
 

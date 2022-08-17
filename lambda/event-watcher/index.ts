@@ -26,7 +26,21 @@ const handleMediaConvertEvent = async (event: Event) => {
 }
 
 const handleTranscribeEvent = async (event: Event) => {
-    console.log('transcribe event', JSON.stringify(event, null, 2))
+    const {Item} = await db.getItem({Id: event.detail.TranscriptionJobName});
+    if (!Item)
+        return
+    if (event.detail.TranscriptionJobStatus === "FAILED") {
+        return await sfn.send(new SendTaskFailureCommand({
+            taskToken: Item.TaskToken
+        }));
+    }
+    return sfn.send(new SendTaskSuccessCommand({
+        taskToken: Item.TaskToken,
+        output: JSON.stringify({
+            mediaConvert: JSON.parse(Item.TaskOutput),
+            transcribe: event
+        })
+    }));
 }
 
 const services = {

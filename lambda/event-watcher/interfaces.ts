@@ -3,6 +3,8 @@ interface Detail {
     "accountId": string;
     "queue": string;
     "jobId": string;
+    "TranscriptionJobName": string;
+    "TranscriptionJobStatus": "COMPLETED" | "FAILED";
     "status": "COMPLETE" | "ERROR";
     "userMetadata": {
         "id": string;

@@ -33,6 +33,10 @@ export class StateMachineConstruct extends Construct {
                 'input.$': '$',
                 taskToken: JsonPath.taskToken,
             }),
+            resultSelector: {
+                "mediaConvert.$": "$.mediaConvert",
+                "transcribe.$": "$.transcribe"
+            },
             integrationPattern: IntegrationPattern.WAIT_FOR_TASK_TOKEN,
         })
         return startMediaConvertJob.next(startTranscribeJob)

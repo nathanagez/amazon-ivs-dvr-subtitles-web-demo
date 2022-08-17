@@ -42,6 +42,7 @@ export class AmazonIvsDvrSubtitlesWebDemoStack extends Stack {
     private setIamPermissions() {
         this.stateMachine.grantTaskResponse(this.lambdas.functions.eventWatcher)
         this.storage.grantReadToBucket(this.lambdas.functions.mediaConvert)
+        this.storage.grantReadAndWriteToBucket(this.lambdas.functions.transcribe)
         this.storage.grantReadAndWriteToBucket(this.lambdas.roles.mediaConvert)
         this.storage.grantReadAndWriteToTable(this.lambdas.functions.mediaConvert)
         this.storage.grantReadAndWriteToTable(this.lambdas.functions.transcribe)
