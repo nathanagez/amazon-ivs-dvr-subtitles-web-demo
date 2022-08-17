@@ -32,7 +32,9 @@ export class LambdaConstruct extends Construct {
             },
             timeout: Duration.seconds(15)
         });
-        this.transcribeFn = this.createLambdaFn('transcribe', 'Transcribe');
+        this.transcribeFn = this.createLambdaFn('transcribe', 'Transcribe', {
+            timeout: Duration.seconds(15)
+        });
         this.mediaConvertFn = this.createLambdaFn('media-convert', 'MediaConvert', {
             environment: {
                 MC_ROLE: this.mediaConvertRole.roleArn,
@@ -40,6 +42,7 @@ export class LambdaConstruct extends Construct {
                 SERVICE_TOKENS_TABLE: props.tableName
             }
         });
+        this.transcribeFn.role?.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('AmazonTranscribeFullAccess'))
         this.mediaConvertFn.role?.grantPassRole(this.mediaConvertRole)
         this.mediaConvertFn.role?.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('AWSElementalMediaConvertFullAccess'))
     }

@@ -8,8 +8,8 @@ import {
 import {GetObjectCommand, S3Client} from "@aws-sdk/client-s3";
 import {streamToString} from '/opt/nodejs/utils/stream';
 import {BaseRepository} from '/opt/nodejs/utils/repository';
-import {Readable} from "stream";
 import {DynamoDBClient} from "@aws-sdk/client-dynamodb";
+import {Readable} from "stream";
 
 const REQUIRED_ENVS: string[] = [
     "MC_ROLE",

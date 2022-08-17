@@ -28,7 +28,12 @@ export class StateMachineConstruct extends Construct {
             integrationPattern: IntegrationPattern.WAIT_FOR_TASK_TOKEN,
         })
         const startTranscribeJob = new LambdaInvoke(this, 'Start Transcribe Job and Wait', {
-            lambdaFunction: props.lambdaFunctions.transcribe
+            lambdaFunction: props.lambdaFunctions.transcribe,
+            payload: TaskInput.fromObject({
+                'input.$': '$',
+                taskToken: JsonPath.taskToken,
+            }),
+            integrationPattern: IntegrationPattern.WAIT_FOR_TASK_TOKEN,
         })
         return startMediaConvertJob.next(startTranscribeJob)
     }

@@ -1,6 +1,5 @@
 import {Construct} from "constructs";
-import {Rule, RuleProps, RuleTargetInput} from "aws-cdk-lib/aws-events";
-import {NodejsFunction} from "aws-cdk-lib/aws-lambda-nodejs";
+import {Rule, RuleProps} from "aws-cdk-lib/aws-events";
 import {LambdaFunction, SfnStateMachine} from "aws-cdk-lib/aws-events-targets";
 import {IFunction} from "aws-cdk-lib/aws-lambda";
 import {ILambdaFunctions} from "./interfaces";
