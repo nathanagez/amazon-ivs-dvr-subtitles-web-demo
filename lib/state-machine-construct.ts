@@ -35,7 +35,10 @@ export class StateMachineConstruct extends Construct {
             }),
             resultSelector: {
                 "mediaConvert.$": "$.mediaConvert",
-                "transcribe.$": "$.transcribe"
+                "transcribe.$": "$.transcribe",
+                "hls.$": "$.hls",
+                "srt.$": "$.srt",
+                "vtt.$": "$.vtt",
             },
             integrationPattern: IntegrationPattern.WAIT_FOR_TASK_TOKEN,
         })
