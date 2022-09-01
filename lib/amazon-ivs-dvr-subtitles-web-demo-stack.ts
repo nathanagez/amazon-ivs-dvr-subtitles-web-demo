@@ -5,6 +5,7 @@ import {StorageConstruct} from "./storage-construct";
 import {EventsConstruct} from "./events-construct";
 import {StateMachineConstruct} from "./state-machine-construct";
 import {LambdaConstruct} from "./lambda-construct";
+import {CloudfrontConstruct} from "./cloudfront-construct";
 
 export class AmazonIvsDvrSubtitlesWebDemoStack extends Stack {
     private static MC_ID = "demo";
@@ -13,14 +14,19 @@ export class AmazonIvsDvrSubtitlesWebDemoStack extends Stack {
     private eventBridge: EventsConstruct;
     private stateMachine: StateMachineConstruct;
     private lambdas: LambdaConstruct;
+    private cloudfront: CloudfrontConstruct;
 
     constructor(scope: Construct, id: string, props?: StackProps) {
         super(scope, id, props);
 
         this.storage = new StorageConstruct(this, 'Storage');
+        this.cloudfront = new CloudfrontConstruct(this, 'Cloudfront', {
+            bucket: this.storage.bucket
+        })
         this.lambdas = new LambdaConstruct(this, 'Lambdas', {
             mediaConvertId: AmazonIvsDvrSubtitlesWebDemoStack.MC_ID,
-            tableName: this.storage.tableName
+            tableName: this.storage.tableName,
+            cloudFrontDomainName: this.cloudfront.distributionDomainName
         });
         this.ivs = new IvsConstruct(this, 'Ivs', {
             bucketName: this.storage.bucketName
@@ -65,6 +71,10 @@ export class AmazonIvsDvrSubtitlesWebDemoStack extends Stack {
         new CfnOutput(this, 'TableName', {
             value: this.storage.tableName,
             description: 'DynamoDB Table Name',
+        });
+        new CfnOutput(this, 'CloudFrontDomainName', {
+            value: this.cloudfront.distributionDomainName,
+            description: 'CloudFront Domain Name',
         });
     }
 }

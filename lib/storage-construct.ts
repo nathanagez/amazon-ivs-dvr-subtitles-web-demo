@@ -4,7 +4,7 @@ import {AttributeType, Table} from "aws-cdk-lib/aws-dynamodb";
 import {IGrantable} from "aws-cdk-lib/aws-iam";
 
 export class StorageConstruct extends Construct {
-    private bucket: IBucket;
+    public readonly bucket: IBucket;
     private table: Table;
 
     constructor(scope: Construct, id: string) {

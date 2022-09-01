@@ -8,6 +8,7 @@ import {Duration} from "aws-cdk-lib";
 interface Props {
     mediaConvertId: string;
     tableName: string;
+    cloudFrontDomainName: string;
 }
 
 export class LambdaConstruct extends Construct {
@@ -28,7 +29,8 @@ export class LambdaConstruct extends Construct {
         // Then create Lambda functions
         this.eventWatcherFn = this.createLambdaFn('event-watcher', 'EventWatcher', {
             environment: {
-                SERVICE_TOKENS_TABLE: props.tableName
+                SERVICE_TOKENS_TABLE: props.tableName,
+                CLOUDFRONT_DOMAIN_NAME: props.cloudFrontDomainName
             },
             timeout: Duration.seconds(15)
         });
