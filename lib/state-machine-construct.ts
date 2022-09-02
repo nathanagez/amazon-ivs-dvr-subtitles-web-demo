@@ -1,11 +1,13 @@
 import {Construct} from "constructs";
 import {IntegrationPattern, JsonPath, StateMachine, TaskInput} from "aws-cdk-lib/aws-stepfunctions";
-import {LambdaInvoke} from "aws-cdk-lib/aws-stepfunctions-tasks";
+import {LambdaInvoke, SnsPublish} from "aws-cdk-lib/aws-stepfunctions-tasks";
 import {ILambdaFunctions} from "./interfaces";
 import {IGrantable} from "aws-cdk-lib/aws-iam";
+import {ITopic} from "aws-cdk-lib/aws-sns";
 
 interface Props {
     lambdaFunctions: ILambdaFunctions
+    topic: ITopic;
 }
 
 export class StateMachineConstruct extends Construct {
@@ -13,7 +15,7 @@ export class StateMachineConstruct extends Construct {
 
     constructor(scope: Construct, id: string, props: Props) {
         super(scope, id);
-        this.stateMachine = new StateMachine(this, 'Definition', {
+        this.stateMachine = new StateMachine(this, 'SubtitlesGeneration', {
             definition: this.createDefinition(props)
         })
     }
@@ -38,11 +40,19 @@ export class StateMachineConstruct extends Construct {
                 "transcribe.$": "$.transcribe",
                 "hls.$": "$.hls",
                 "srt.$": "$.srt",
-                "vtt.$": "$.vtt",
+                "vtt.$": "$.vtt"
             },
             integrationPattern: IntegrationPattern.WAIT_FOR_TASK_TOKEN,
         })
-        return startMediaConvertJob.next(startTranscribeJob)
+        const publishToSns = new SnsPublish(this, 'Publish to SNS', {
+            topic: props.topic,
+            message: TaskInput.fromObject({
+                hls: JsonPath.stringAt("$.hls"),
+                srt: JsonPath.stringAt("$.srt"),
+                vtt: JsonPath.stringAt("$.vtt"),
+            })
+        });
+        return startMediaConvertJob.next(startTranscribeJob.next(publishToSns))
     }
 
     grantTaskResponse(identity: IGrantable) {
