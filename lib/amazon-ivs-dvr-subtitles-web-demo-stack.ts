@@ -1,4 +1,4 @@
-import {CfnOutput, Stack, StackProps} from 'aws-cdk-lib';
+import {CfnOutput, CfnParameter, Stack, StackProps} from 'aws-cdk-lib';
 import {Construct} from 'constructs';
 import {IvsConstruct} from "./ivs-construct";
 import {StorageConstruct} from "./storage-construct";
@@ -6,6 +6,7 @@ import {EventsConstruct} from "./events-construct";
 import {StateMachineConstruct} from "./state-machine-construct";
 import {LambdaConstruct} from "./lambda-construct";
 import {CloudfrontConstruct} from "./cloudfront-construct";
+import {SnsConstruct} from "./sns-contruct";
 
 export class AmazonIvsDvrSubtitlesWebDemoStack extends Stack {
     private static MC_ID = "demo";
@@ -15,10 +16,17 @@ export class AmazonIvsDvrSubtitlesWebDemoStack extends Stack {
     private stateMachine: StateMachineConstruct;
     private lambdas: LambdaConstruct;
     private cloudfront: CloudfrontConstruct;
+    private sns: SnsConstruct;
 
     constructor(scope: Construct, id: string, props?: StackProps) {
         super(scope, id, props);
 
+        this.sns = new SnsConstruct(this, 'Sns', {
+            email: new CfnParameter(this, "email", {
+                type: "String",
+                description: "The email address used to subscribe to the SNS topic"
+            }).valueAsString
+        })
         this.storage = new StorageConstruct(this, 'Storage');
         this.cloudfront = new CloudfrontConstruct(this, 'Cloudfront', {
             bucket: this.storage.bucket
@@ -32,7 +40,8 @@ export class AmazonIvsDvrSubtitlesWebDemoStack extends Stack {
             bucketName: this.storage.bucketName
         })
         this.stateMachine = new StateMachineConstruct(this, 'StateMachine', {
-            lambdaFunctions: this.lambdas.functions
+            lambdaFunctions: this.lambdas.functions,
+            topic: this.sns.topic
         })
         this.eventBridge = new EventsConstruct(this, 'Events', {
             ivsChannelArn: this.ivs.channelArn,
@@ -59,6 +68,14 @@ export class AmazonIvsDvrSubtitlesWebDemoStack extends Stack {
         new CfnOutput(this, 'IvsChannelArn', {
             value: this.ivs.channelArn,
             description: 'IVS Channel ARN',
+        });
+        new CfnOutput(this, 'IvsIngestEndpoint', {
+            value: this.ivs.ingestEndpoint,
+            description: 'IVS Ingest Endpoint',
+        });
+        new CfnOutput(this, 'IvsStreamKey', {
+            value: this.ivs.streamKeyValue,
+            description: 'IVS Stream Key',
         });
         new CfnOutput(this, 'BucketName', {
             value: this.storage.bucketName,

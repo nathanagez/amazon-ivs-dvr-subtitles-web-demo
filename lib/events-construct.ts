@@ -20,7 +20,6 @@ export class EventsConstruct extends Construct {
     constructor(scope: Construct, id: string, props: Props) {
         super(scope, id);
 
-        // Create EventBridge rule
         this.ivsRule = this.createRule('Ivs', {
             eventPattern: {
                 source: ["aws.ivs"],

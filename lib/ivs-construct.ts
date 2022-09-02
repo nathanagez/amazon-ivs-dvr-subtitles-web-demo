@@ -13,7 +13,7 @@ export class IvsConstruct extends Construct {
     constructor(scope: Construct, id: string, props: Props) {
         super(scope, id);
         this.recordingConfig = this.createRecordingConfig(props.bucketName, 'RecordingConfiguration')
-        this.channel = this.createChannel('my-demo-channel', 'Channel')
+        this.channel = this.createChannel('ivs-subtitles-demo', 'Channel')
         this.streamKey = this.addStreamKey('StreamKey', this.channelArn);
     }
 
@@ -46,5 +46,13 @@ export class IvsConstruct extends Construct {
 
     get channelArn() {
         return this.channel.attrArn;
+    }
+
+    get ingestEndpoint() {
+        return `rtmps://${this.channel.attrIngestEndpoint}:443/app`;
+    }
+
+    get streamKeyValue() {
+        return this.streamKey.attrValue;
     }
 }

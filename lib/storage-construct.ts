@@ -2,6 +2,7 @@ import {Construct} from "constructs";
 import {Bucket, IBucket} from "aws-cdk-lib/aws-s3";
 import {AttributeType, Table} from "aws-cdk-lib/aws-dynamodb";
 import {IGrantable} from "aws-cdk-lib/aws-iam";
+import {RemovalPolicy} from "aws-cdk-lib";
 
 export class StorageConstruct extends Construct {
     public readonly bucket: IBucket;
@@ -9,7 +10,7 @@ export class StorageConstruct extends Construct {
 
     constructor(scope: Construct, id: string) {
         super(scope, id);
-        this.bucket = this.createBucket('Bucket');
+        this.bucket = this.createBucket('IvsRecords');
         this.table = this.createDynamoTable('ServiceTokens')
     }
 
@@ -23,7 +24,9 @@ export class StorageConstruct extends Construct {
     }
 
     private createBucket(id: string) {
-        return new Bucket(this, id)
+        return new Bucket(this, id, {
+            removalPolicy: RemovalPolicy.DESTROY
+        })
     }
 
     get tableName() {

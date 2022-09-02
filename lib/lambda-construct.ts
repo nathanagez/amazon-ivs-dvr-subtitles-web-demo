@@ -21,13 +21,13 @@ export class LambdaConstruct extends Construct {
     constructor(scope: Construct, id: string, props: Props) {
         super(scope, id);
         // Create layers
-        this.utilLayer = this.createLayer('utils', 'Utils', 'Utils layer');
+        this.utilLayer = this.createLayer('utils', 'UtilsIvs', 'Utils layer');
 
         // Create roles
         this.mediaConvertRole = this.createIamRole('mediaconvert.amazonaws.com', 'MediaConvertRole');
 
         // Then create Lambda functions
-        this.eventWatcherFn = this.createLambdaFn('event-watcher', 'EventWatcher', {
+        this.eventWatcherFn = this.createLambdaFn('event-watcher', 'Event-Watcher', {
             environment: {
                 SERVICE_TOKENS_TABLE: props.tableName,
                 CLOUDFRONT_DOMAIN_NAME: props.cloudFrontDomainName

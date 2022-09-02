@@ -19,6 +19,7 @@ export class CloudfrontConstruct extends Construct {
     private createDistribution(bucket: IBucket, id: string) {
         return new Distribution(this, id, {
             defaultBehavior: { origin: new S3Origin(bucket) },
+            comment: "Distribution for VOD - IVS subtitles demo"
         });
     }
 
