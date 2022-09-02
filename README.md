@@ -42,7 +42,7 @@ $ cdk bootstrap aws://<ACCOUNT-NUMBER-1/REGION-1
 ### Deploy
 
 ```sh
-$ cdk deploy
+$ cdk deploy --parameters email="your-email@to-subscribe-to-sns.com"
 ```
 
 ### Setup
