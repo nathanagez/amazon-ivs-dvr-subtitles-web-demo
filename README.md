@@ -93,7 +93,7 @@ The main state machine starts and waits for the MediaConvert Job to finish, it e
       }
     },
     "Start Transcribe Job and Wait": {
-      "End": true,
+      "Next": "Publish to SNS",
       "Retry": [
         {
           "ErrorEquals": [
@@ -107,10 +107,33 @@ The main state machine starts and waits for the MediaConvert Job to finish, it e
         }
       ],
       "Type": "Task",
-      "Resource": "arn:aws:states:::lambda:invoke",
+      "ResultSelector": {
+        "mediaConvert.$": "$.mediaConvert",
+        "transcribe.$": "$.transcribe",
+        "hls.$": "$.hls",
+        "srt.$": "$.srt",
+        "vtt.$": "$.vtt"
+      },
+      "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
       "Parameters": {
         "FunctionName": "${TranscribeLambda}",
-        "Payload.$": "$"
+        "Payload": {
+          "input.$": "$",
+          "taskToken.$": "$$.Task.Token"
+        }
+      }
+    },
+    "Publish to SNS": {
+      "End": true,
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "TopicArn": "${SnsTopic}",
+        "Message": {
+          "hls.$": "$.hls",
+          "srt.$": "$.srt",
+          "vtt.$": "$.vtt"
+        }
       }
     }
   }
