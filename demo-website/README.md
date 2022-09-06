@@ -6,6 +6,14 @@ This project uses:
 - [video.js](https://videojs.com/)
 - [gh-pages](https://github.com/tschaub/gh-pages)
 
+## Getting started
+The following steps describe how to deploy the solution using the Amazon Cloud Development Kit (CDK). Read more about the CDK [here](https://docs.aws.amazon.com/cdk/v2/guide/home.html).
+```sh
+$ git clone git@github.com:nathanagez/amazon-ivs-dvr-subtitles-web-demo.git
+$ cd amazon-ivs-dvr-subtitles-web-demo/demo-website
+$ npm install
+```
+
 ### `npm start`
 
 Runs the app in the development mode.\
