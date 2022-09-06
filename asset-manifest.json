@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/amazon-ivs-dvr-subtitles-web-demo/static/css/main.2294a79c.css",
+    "main.js": "/amazon-ivs-dvr-subtitles-web-demo/static/js/main.f94026f6.js",
+    "static/js/787.994511a4.chunk.js": "/amazon-ivs-dvr-subtitles-web-demo/static/js/787.994511a4.chunk.js",
+    "index.html": "/amazon-ivs-dvr-subtitles-web-demo/index.html",
+    "main.2294a79c.css.map": "/amazon-ivs-dvr-subtitles-web-demo/static/css/main.2294a79c.css.map",
+    "main.f94026f6.js.map": "/amazon-ivs-dvr-subtitles-web-demo/static/js/main.f94026f6.js.map",
+    "787.994511a4.chunk.js.map": "/amazon-ivs-dvr-subtitles-web-demo/static/js/787.994511a4.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.2294a79c.css",
+    "static/js/main.f94026f6.js"
+  ]
+}
