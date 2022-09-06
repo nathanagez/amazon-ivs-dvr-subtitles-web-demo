@@ -11,6 +11,7 @@ This demo also uses [AWS Cloud Development Kit (AWS CDK v2)](https://aws.amazon.
 - [State Machine](#state-machine)
   - [State Machine Definition](#state-machine-definition)
   - [Execution Input](#execution-input)
+- [Demo website](#demo-website)
 - [Troubleshooting](#troubleshooting)
     - [Docker (access denied)](#docker-access-denied)
 
@@ -165,6 +166,13 @@ The main state machine starts and waits for the MediaConvert Job to finish, it e
   }
 }
 ```
+## Demo Website
+A demo website is available here: https://nathanagez.github.io/amazon-ivs-dvr-subtitles-web-demo/
+
+It uses React and VideoJS to read the HLS stream and parse the `vtt` file to display time-triggered text to the end-user.
+
+Sources are available under [/demo-website](demo-website) directory.
+
 ## Troubleshooting
 
 ### Docker (access denied)
